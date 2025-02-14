@@ -1,13 +1,22 @@
 FROM python:3.10-alpine
 
-WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=1
 
-COPY . .
+RUN apk add --no-cache gcc musl-dev libffi-dev sqlite sqlite-dev && \
+		pip install --upgrade pip && \
+		pip install pipenv
 
-RUN apk add --no-cache gcc musl-dev
-RUN pip install pipenv
-RUN pipenv install --system --deploy
+WORKDIR /api
+
+COPY Pipfile Pipfile.lock /api/
+
+RUN pipenv install --deploy --ignore-pipfile --python 3.10
+
+COPY . /api/
+
+RUN pipenv run python artisan.py db:migrate
 
 EXPOSE 8000
 
-CMD ["pipenv", "run", "python", "main.py"]
+CMD ["pipenv", "run", "serve"]
