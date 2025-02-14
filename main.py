@@ -36,10 +36,7 @@ def logIn():
 
     payload["id"] = last_id
 
-    return jsonify({
-        "statusText": "created",
-        "record": payload
-    }), 201
+    return jsonify({"statusText": "created", "record": payload}), 201
 
 
 @chats_bp.route("/channel", methods=["GET"])
@@ -57,16 +54,18 @@ def get_channel_messages():
 
     for row in query:
         id, senderId, row, mimeType, username, avatar, createdAt, updatedAt = row
-        messages.append({
-            "id": id,
-            "senderId": senderId,
-            "username": username,
-            "avatar": avatar,
-            "message": row,
-            "mimeType": mimeType,
-            "createdAt": createdAt,
-            "updatedAt": updatedAt,
-        })
+        messages.append(
+            {
+                "id": id,
+                "senderId": senderId,
+                "username": username,
+                "avatar": avatar,
+                "message": row,
+                "mimeType": mimeType,
+                "createdAt": createdAt,
+                "updatedAt": updatedAt,
+            }
+        )
     con.close()
 
     return jsonify(messages), 200
@@ -94,10 +93,7 @@ def send_message():
 
     payload["id"] = last_id
 
-    return jsonify({
-        "statusText": "created",
-        "record": payload
-    }), 201
+    return jsonify({"statusText": "created", "record": payload}), 201
 
 
 v1_bp.register_blueprint(chats_bp)
